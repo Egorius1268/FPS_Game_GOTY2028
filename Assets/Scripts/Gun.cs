@@ -30,7 +30,16 @@ public class Gun : MonoBehaviour
 
         if (rb != null)
         {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
             rb.velocity = bullet.transform.forward * bulletSpeed;
+        }
+        
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+        if (bulletScript != null)
+        {
+            bulletScript.pool = bulletPool;
+            bulletScript.lifeTime = 5f;
         }
 
         StartCoroutine(DeactivateBullet(bullet));

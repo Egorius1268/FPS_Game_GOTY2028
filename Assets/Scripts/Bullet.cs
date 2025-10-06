@@ -1,0 +1,77 @@
+using System;
+using UnityEngine;
+using System.Collections;
+
+public class Bullet : MonoBehaviour
+{
+    public float lifeTime = 5f;
+    public ObjectPool pool;
+    
+    Rigidbody rb;
+    Coroutine lifeCoroutine;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void OnEnable()
+    {
+        if (rb != null)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        lifeCoroutine = StartCoroutine(ReturnAfter(lifeTime));
+    }
+
+    void OnDisable()
+    {
+        if (lifeCoroutine != null)
+        {
+            StopCoroutine(lifeCoroutine);
+            lifeCoroutine = null;
+        }
+    }
+
+    IEnumerator ReturnAfter(float time)
+    {
+        yield return new WaitForSeconds(time);
+        ReturnToPool();
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        ReturnToPool();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        ReturnToPool();
+    }
+
+    void ReturnToPool()
+    {
+        if (lifeCoroutine != null)
+        {
+            StopCoroutine(lifeCoroutine);
+            lifeCoroutine = null;
+        }
+
+        if (rb != null)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        if (pool != null)
+        {
+            pool.ReturnObject(gameObject);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
+    }
+}
