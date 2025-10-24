@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour
 {
-    public float lifeTime = 5f;
+    public float lifeTime;
     public ObjectPool pool;
     
     Rigidbody rb;
