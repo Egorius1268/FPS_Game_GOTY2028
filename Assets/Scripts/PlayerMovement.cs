@@ -7,13 +7,13 @@ public class PlayerMovement : MonoBehaviour
 
 {
     public Camera playerCamera;
-    public float walkSpeed = 6f;
-    public float runSpeed = 12f;
-    public float jumpPower = 7f;
-    public float gravity = 10f;
-    public float defaultHeight = 2f;
-    public float crouchHeight = 1f;
-    public float crouchSpeed = 3f;
+    public float walkSpeed;
+    public float runSpeed;
+    public float jumpPower;
+    public float gravity;
+    public float defaultHeight;
+    public float crouchHeight;
+    public float crouchSpeed;
     private Vector3 moveDirection = Vector3.zero;
     private CharacterController characterController;
     

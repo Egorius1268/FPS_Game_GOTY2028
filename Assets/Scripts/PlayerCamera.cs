@@ -4,7 +4,7 @@ public class PlayerCamera: MonoBehaviour
 {
     private float xRotation = 0f;
 
-    [SerializeField] public float mouseSensitivity = 2f;
+    public float mouseSensitivity = 2f;
     public float yRotationLimit = 90f;
 
     void Update()
