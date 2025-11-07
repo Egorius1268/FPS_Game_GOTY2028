@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Gun : MonoBehaviour
 {
-    public float damage = 10f;
+    public float damage = 85f;
     public float range = 100f;
     public float bulletSpeed = 1500f;
     public Camera playerCam;
@@ -39,11 +40,13 @@ public class Gun : MonoBehaviour
         
         //bullet.transform.rotation = shootingPoint.transform.rotation;
         Vector3 direction = (targetPoint - shootingPoint.position).normalized;
-        Target target = hit.transform.GetComponent<Target>();
+        /*Target target = hit.transform.GetComponent<Target>();
         if (target != null)
         {
             target.TakeDamage(damage);
-        }
+        }*/
+        
+
         if (Vector3.Distance(shootingPoint.position, targetPoint) < 0.1f)
         {
             direction = playerCam.transform.forward; 
@@ -64,6 +67,7 @@ public class Gun : MonoBehaviour
         {
             bulletScript.pool = bulletPool;
             bulletScript.lifeTime = 5f;
+            bulletScript.damage = this.damage;
         }
 
        // StartCoroutine(DeactivateBullet(bullet));

@@ -6,6 +6,7 @@ public class Bullet : MonoBehaviour
 {
     public float lifeTime;
     public ObjectPool pool;
+    public float damage;
     
     Rigidbody rb;
     Coroutine lifeCoroutine;
@@ -43,6 +44,11 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        Target target = collision.gameObject.GetComponent<Target>();
+        if (target != null)
+        {
+            target.TakeDamage(damage);
+        }
         ReturnToPool();
     }
 

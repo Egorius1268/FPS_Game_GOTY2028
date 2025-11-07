@@ -1122,7 +1122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff79b70039f1e3542b18b7d1dc808991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 50
+  damage: 86.1
   range: 99
   bulletSpeed: 902.4
   playerCam: {fileID: 367117568}
