@@ -9,6 +9,7 @@ public class Gun : MonoBehaviour
     public float damage = 85f;
     public float range = 100f;
     public float bulletSpeed = 1500f;
+    public int currentClip, maxClipSize = 6, currentAmmo, maxAmmoSize = 86;
     public Camera playerCam;
     public ObjectPool bulletPool;
     public Transform shootingPoint;
@@ -19,70 +20,71 @@ public class Gun : MonoBehaviour
             Shoot();
         }
     }
-
-    //[Obsolete("Obsolete")]
+    
     void Shoot()
     {
-        Ray camRay = playerCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        Vector3 targetPoint;
-        RaycastHit hit;
-        if (Physics.Raycast(camRay, out hit, range))
-        {
-            targetPoint = hit.point;
-        }
-        else
-        {
-            targetPoint = camRay.origin + camRay.direction * range;
-        }
-        
-        GameObject bullet  = bulletPool.GetObject();
-        bullet.transform.position = shootingPoint.position;
-        
-        //bullet.transform.rotation = shootingPoint.transform.rotation;
-        Vector3 direction = (targetPoint - shootingPoint.position).normalized;
-        /*Target target = hit.transform.GetComponent<Target>();
-        if (target != null)
-        {
-            target.TakeDamage(damage);
-        }*/
-        
+        if (currentClip > 0){ 
+            Ray camRay = playerCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            Vector3 targetPoint;
+            RaycastHit hit;
+            if (Physics.Raycast(camRay, out hit, range))
+            {
+                targetPoint = hit.point;
+            }
+            else
+            {
+                targetPoint = camRay.origin + camRay.direction * range;
+            }
+            
+            GameObject bullet  = bulletPool.GetObject();
+            bullet.transform.position = shootingPoint.position;
+            
+            Vector3 direction = (targetPoint - shootingPoint.position).normalized;
+           
 
-        if (Vector3.Distance(shootingPoint.position, targetPoint) < 0.1f)
-        {
-            direction = playerCam.transform.forward; 
+            if (Vector3.Distance(shootingPoint.position, targetPoint) < 0.1f)
+            {
+                direction = playerCam.transform.forward; 
+            }
+            
+            bullet.transform.rotation = Quaternion.LookRotation(direction);
+            Rigidbody rb = bullet.GetComponent<Rigidbody>();
+
+            if (rb != null)
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.velocity = bullet.transform.forward * bulletSpeed;
+            }
+            
+            Bullet bulletScript = bullet.GetComponent<Bullet>();
+            if (bulletScript != null)
+            {
+                bulletScript.pool = bulletPool;
+                bulletScript.lifeTime = 5f;
+                bulletScript.damage = this.damage;
+            }
+
+            currentClip--;
         }
-        
-        bullet.transform.rotation = Quaternion.LookRotation(direction);
-        Rigidbody rb = bullet.GetComponent<Rigidbody>();
-
-        if (rb != null)
-        {
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.velocity = bullet.transform.forward * bulletSpeed;
-        }
-        
-        Bullet bulletScript = bullet.GetComponent<Bullet>();
-        if (bulletScript != null)
-        {
-            bulletScript.pool = bulletPool;
-            bulletScript.lifeTime = 5f;
-            bulletScript.damage = this.damage;
-        }
-
-       // StartCoroutine(DeactivateBullet(bullet));
-
-        /*RaycastHit hit;
-        if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit, range))
-        {
-            Debug.Log(hit.transform.name);
-        }*/
-
     }
 
-   /* IEnumerator DeactivateBullet(GameObject bullet)
+    public void Reload()
     {
-        yield return new WaitForSeconds(2f);
-        bulletPool.ReturnObject(bullet);
-    }*/
+        int reloadAmount = maxClipSize - currentClip;
+        reloadAmount = (currentAmmo + reloadAmount) >= 0 ? reloadAmount : currentAmmo;
+        currentClip += reloadAmount;
+        currentAmmo -= reloadAmount;
+    }
+
+    public void AddAmmo(int ammoAmount)
+    {
+        currentAmmo += ammoAmount;
+        if (currentAmmo > maxAmmoSize)
+        {
+            currentAmmo = maxAmmoSize;
+        }
+        
+    }
+   
 }

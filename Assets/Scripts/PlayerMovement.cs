@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 
 {
+    public Gun gun;
     public Camera playerCamera;
     public float walkSpeed;
     public float runSpeed;
@@ -67,7 +68,11 @@ public class PlayerMovement : MonoBehaviour
         }
         
         characterController.Move(moveDirection * Time.deltaTime);
-        
+
+        if (Input.GetKey(KeyCode.R))
+        {
+            gun.Reload();
+        }
 
     }
 

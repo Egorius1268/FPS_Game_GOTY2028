@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 201857531}
   - component: {fileID: 201857530}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Crosshair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1095,7 +1095,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1125,6 +1125,10 @@ MonoBehaviour:
   damage: 86.1
   range: 99
   bulletSpeed: 902.4
+  currentClip: 0
+  maxClipSize: 6
+  currentAmmo: 70
+  maxAmmoSize: 86
   playerCam: {fileID: 367117568}
   bulletPool: {fileID: 468412703}
   shootingPoint: {fileID: 851471975}
@@ -1400,6 +1404,10 @@ PrefabInstance:
       propertyPath: orthographic
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1216078863297658735, guid: cef162e1368215747b6a05b5b686b053, type: 3}
+      propertyPath: gun
+      value: 
+      objectReference: {fileID: 1876140552}
     - target: {fileID: 1216078863297658735, guid: cef162e1368215747b6a05b5b686b053, type: 3}
       propertyPath: runSpeed
       value: 25.2
