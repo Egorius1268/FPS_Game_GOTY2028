@@ -18,11 +18,14 @@ public class Gun : MonoBehaviour
     public Camera playerCam;
     public ObjectPool bulletPool;
     public Transform shootingPoint;
+    public float fireRate = 0.25f;
+    private float nextFireTime = 0f;
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && Time.time >= nextFireTime)
         {
             Shoot();
+            nextFireTime = Time.time + 1f / fireRate;
         }
     }
     
@@ -47,10 +50,10 @@ public class Gun : MonoBehaviour
             Vector3 direction = (targetPoint - shootingPoint.position).normalized;
            
 
-            if (Vector3.Distance(shootingPoint.position, targetPoint) < 0.5f || direction == Vector3.zero)
+           /* if (Vector3.Distance(shootingPoint.position, targetPoint) < 0.5f || direction == Vector3.zero)
             {
                 direction = playerCam.transform.forward; 
-            }
+            }*/
             
             bullet.transform.rotation = Quaternion.LookRotation(direction);
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
