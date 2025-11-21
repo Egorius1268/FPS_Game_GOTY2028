@@ -10,18 +10,25 @@ public class ObjectPool : MonoBehaviour
 
     public GameObject GetObject()
     {
+        GameObject obj;
         if (pool.Count > 0)
         {
-            GameObject obj = pool.Dequeue();
+            obj = pool.Dequeue();
+            obj.transform.position = Vector3.zero;
+            obj.transform.rotation = Quaternion.identity;
             obj.SetActive(true);
             return obj;
         }
         return Instantiate(prefab);
+        
+        
     }
 
     public void ReturnObject(GameObject obj)
     {
         obj.SetActive(false);
+        obj.transform.position = Vector3.zero;
+        obj.transform.rotation = Quaternion.identity;
         pool.Enqueue(obj);
     }
 }

@@ -25,6 +25,7 @@ public class Bullet : MonoBehaviour
         }
 
         lifeCoroutine = StartCoroutine(ReturnAfter(lifeTime));
+        
     }
 
     void OnDisable()

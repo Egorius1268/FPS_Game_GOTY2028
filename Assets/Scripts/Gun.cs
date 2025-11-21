@@ -34,8 +34,7 @@ public class Gun : MonoBehaviour
         if (currentClip > 0){ 
             Ray camRay = playerCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             Vector3 targetPoint;
-            RaycastHit hit;
-            if (Physics.Raycast(camRay, out hit, range))
+            if (Physics.Raycast(camRay, out var hit, range))
             {
                 targetPoint = hit.point;
             }
@@ -43,19 +42,11 @@ public class Gun : MonoBehaviour
             {
                 targetPoint = camRay.origin + camRay.direction * range;
             }
-            
-            GameObject bullet  = bulletPool.GetObject();
-            bullet.transform.position = shootingPoint.position;
-            
             Vector3 direction = (targetPoint - shootingPoint.position).normalized;
-           
-
-           /* if (Vector3.Distance(shootingPoint.position, targetPoint) < 0.5f || direction == Vector3.zero)
-            {
-                direction = playerCam.transform.forward; 
-            }*/
+            GameObject bullet  = bulletPool.GetObject();
+            bullet.transform.SetPositionAndRotation(shootingPoint.position, Quaternion.LookRotation(direction));
             
-            bullet.transform.rotation = Quaternion.LookRotation(direction);
+            
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
 
             if (rb != null)
@@ -80,24 +71,7 @@ public class Gun : MonoBehaviour
             return;
         }
     }
-    /*public void Reload()
-    {
-        int reloadAmount = maxClipSize - currentClip;
-        reloadAmount = (currentAmmo + reloadAmount) >= 0 ? reloadAmount : currentAmmo;
-        currentClip += reloadAmount;
-        currentAmmo -= reloadAmount;
-    }
-
-    public void AddAmmo(int ammoAmount)
-    {
-        currentAmmo += ammoAmount;
-        if (currentAmmo > maxAmmoSize)
-        {
-            currentAmmo = maxAmmoSize;
-        }
-        
-    }
-  */
+    
     public void Reload()
     {
         if (currentClip == maxClipSize)
