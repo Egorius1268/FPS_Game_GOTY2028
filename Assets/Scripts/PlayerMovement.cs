@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public float curSpeedX = 0;
     public float startWalkSpeed = 13f;
     public float startRunSpeed = 26f;
+    public float crouchSpeed = 7f;
     public float walkSpeed = 13f;
     public float runSpeed = 26f;
     public float jumpPower = 7f;
@@ -28,7 +29,11 @@ public class PlayerMovement : MonoBehaviour
     public float defaultHeight = 2f;
     public float crouchHeight = 1f;
     public float speedBoostPerJump = 2f;
+    public float speedBoostDuration = 3f;
+    public float speedDecayRate = 2f;
     
+    private float currentSpeedBoost = 0f;
+    private float speedBoostTimer = 0f;
     private Vector3 moveDirection = Vector3.zero;
     private CharacterController characterController;
     private bool wasGrounded = false;
@@ -46,8 +51,11 @@ public class PlayerMovement : MonoBehaviour
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        curSpeedX =  (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical");
-        float curSpeedY =  (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal");
+        float currentWalkSpeed = walkSpeed + currentSpeedBoost;
+        float currentRunSpeed = runSpeed + currentSpeedBoost;
+        
+        curSpeedX =  (isRunning ? currentRunSpeed : currentWalkSpeed) * Input.GetAxis("Vertical");
+        float curSpeedY =  (isRunning ? currentRunSpeed : currentWalkSpeed) * Input.GetAxis("Horizontal");
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
@@ -63,9 +71,22 @@ public class PlayerMovement : MonoBehaviour
 
         if (characterController.isGrounded && !wasGrounded)
         {
-            walkSpeed += speedBoostPerJump;
-            runSpeed +=  speedBoostPerJump;
+            currentSpeedBoost += speedBoostPerJump;
+            speedBoostTimer = speedBoostDuration;
             //playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, walkSpeed, Time.deltaTime);
+        }
+
+        if (speedBoostTimer > 0)
+        {
+            speedBoostTimer -= Time.deltaTime;
+            if (speedBoostTimer <= 0)
+            {
+                currentSpeedBoost = Mathf.Max(0, currentSpeedBoost - speedDecayRate * 2);
+            }
+        }
+        else if(currentSpeedBoost > 0)
+        {
+            currentSpeedBoost = Mathf.Max(0, currentSpeedBoost - speedDecayRate * 2);
         }
        
         if (!characterController.isGrounded)
@@ -78,14 +99,15 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl))
         {
             characterController.height = crouchHeight;
-            walkSpeed = startWalkSpeed / 4;
-            runSpeed = startRunSpeed / 4;
+
         }
 
         else
         
         {
             characterController.height = defaultHeight;
+            
+           
         }
         
         characterController.Move(moveDirection * Time.deltaTime);
