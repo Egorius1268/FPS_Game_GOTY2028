@@ -57,18 +57,22 @@ public class PlayerMovementNew : MonoBehaviour
     private void Awake()
     {
         this.enabled = true;
-        Rigidbody rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         rb.WakeUp();
     }
 
     private enum MovementState
     {
+        Freeze,
         Walking,
         Sprinting,
         Crouching,
         Air
         
     }
+
+    public bool freeze;
+    
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -139,8 +143,16 @@ public class PlayerMovementNew : MonoBehaviour
 
     private void StateHandler()
     {
+        // Freeze 
+        if (freeze)
+        {
+            movementState = MovementState.Freeze;
+            moveSpeed = 0;
+            rb.linearVelocity = Vector3.zero;
+        }
+        
         // Crouching
-        if (Input.GetKey(crouchKey))
+        else if (Input.GetKey(crouchKey))
         {
             movementState =  MovementState.Crouching;
             moveSpeed = crouchSpeed;
