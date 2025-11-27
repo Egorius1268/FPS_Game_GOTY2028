@@ -3,7 +3,7 @@ using TMPro;
 
 public class Speedometer : MonoBehaviour
 {
-    public PlayerMovement playerMovement;
+    public PlayerMovementNew playerMovement;
     public TextMeshProUGUI text;
 
     void Start()
@@ -16,9 +16,9 @@ public class Speedometer : MonoBehaviour
         UpdateSpeedText();
     }
 
-    public void UpdateSpeedText()
+    private void UpdateSpeedText()
     {
-        text.text = $"{playerMovement.curSpeedX}";
+        text.text = $"{playerMovement.GetCurrentSpeed()}";
         
     }
     
