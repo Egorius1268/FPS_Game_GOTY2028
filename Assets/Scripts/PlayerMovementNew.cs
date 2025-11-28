@@ -13,6 +13,7 @@ public class PlayerMovementNew : MonoBehaviour
     public float walkSpeed;
     public float sprintSpeed;
     public float slideSpeed;
+    public float wallrunSpeed;
     
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
@@ -71,6 +72,7 @@ public class PlayerMovementNew : MonoBehaviour
         Freeze,
         Walking,
         Sprinting,
+        Wallrunning,
         Crouching,
         Sliding,
         Air
@@ -82,6 +84,8 @@ public class PlayerMovementNew : MonoBehaviour
     public bool freeze;
 
     public bool activeGrapple;
+
+    public bool wallrunning;
 
     private void Start()
     {
@@ -153,8 +157,16 @@ public class PlayerMovementNew : MonoBehaviour
 
     private void StateHandler()
     {
+        // Wallrunning
+        if (wallrunning)
+        {
+            state = MovementState.Wallrunning;
+            desiredMoveSpeed = wallrunSpeed;
+        }
+        
+        
         // Sliding
-        if (sliding)
+        else if (sliding)
         {
             state = MovementState.Sliding;
             
@@ -263,7 +275,7 @@ public class PlayerMovementNew : MonoBehaviour
         else if (!isGrounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
-        rb.useGravity = !OnSlope();
+        if(!wallrunning) rb.useGravity = !OnSlope();
 
     }
 

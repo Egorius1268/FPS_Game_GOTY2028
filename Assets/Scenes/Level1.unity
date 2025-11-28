@@ -1427,6 +1427,29 @@ MonoBehaviour:
   slideForce: 200
   slideYScale: 0.5
   slideKey: 306
+--- !u!114 &577340027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577340022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31ade46d3e8505c4ba2adcb2504f8add, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallRunning
+  whatIsWall:
+    serializedVersion: 2
+    m_Bits: 64
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 128
+  wallRunForce: 253.6
+  maxWallRunTime: 17.91
+  wallCheckDistance: 1.79
+  minJumpHeight: 1.15
+  orientation: {fileID: 1486781613}
 --- !u!1 &615416075
 GameObject:
   m_ObjectHideFlags: 0
@@ -4315,6 +4338,10 @@ PrefabInstance:
       value: 83.4
       objectReference: {fileID: 0}
     - target: {fileID: 7912008161756219587, guid: 5f87dedcd075bda4e8784681c570d6c5, type: 3}
+      propertyPath: wallrunSpeed
+      value: 43.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7912008161756219587, guid: 5f87dedcd075bda4e8784681c570d6c5, type: 3}
       propertyPath: maxSlopeAngle
       value: 40.3
       objectReference: {fileID: 0}
@@ -4373,6 +4400,9 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6358216160772061531, guid: 5f87dedcd075bda4e8784681c570d6c5, type: 3}
       insertIndex: 2
+      addedObject: {fileID: 577340027}
+    - targetCorrespondingSourceObject: {fileID: 6358216160772061531, guid: 5f87dedcd075bda4e8784681c570d6c5, type: 3}
+      insertIndex: 3
       addedObject: {fileID: 577340026}
     - targetCorrespondingSourceObject: {fileID: 6358216160772061531, guid: 5f87dedcd075bda4e8784681c570d6c5, type: 3}
       insertIndex: -1

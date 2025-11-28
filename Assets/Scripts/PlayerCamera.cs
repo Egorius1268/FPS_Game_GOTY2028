@@ -17,4 +17,14 @@ public class PlayerCamera: MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -yRotationLimit, yRotationLimit);
         Camera.main.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
+
+    public void DoFov(float endValue)
+    {
+        
+    }
+
+    public void DoTilt(float zTilt)
+    {
+        
+    }
 }
