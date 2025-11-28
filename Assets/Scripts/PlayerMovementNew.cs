@@ -1,15 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class PlayerMovementNew : MonoBehaviour
 {
-    [Header("Movement")] public float moveSpeed;
+    [Header("Movement")] 
+    public float moveSpeed;
     public float walkSpeed;
     public float sprintSpeed;
+    public float slideSpeed;
+    
+    public float speedIncreaseMultiplier;
+    public float slopeIncreaseMultiplier;
+
+    private float desiredMoveSpeed;
+    private float lastDesiredMoveSpeed;
+    
 
 
     public float groundDrag;
@@ -46,7 +56,7 @@ public class PlayerMovementNew : MonoBehaviour
 
     private Rigidbody rb;
 
-    MovementState movementState;
+    
 
     private void Awake()
     {
@@ -55,16 +65,20 @@ public class PlayerMovementNew : MonoBehaviour
         rb.WakeUp();
     }
 
-    private enum MovementState
+    public MovementState state;
+    public enum MovementState
     {
         Freeze,
         Walking,
         Sprinting,
         Crouching,
+        Sliding,
         Air
 
     }
 
+    public bool sliding;
+    
     public bool freeze;
 
     public bool activeGrapple;
@@ -115,7 +129,7 @@ public class PlayerMovementNew : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKeyDown(jumpKey) && readyToJump && isGrounded)
+        if (Input.GetKey(jumpKey) && readyToJump && isGrounded)
         {
             readyToJump = false;
 
@@ -139,10 +153,22 @@ public class PlayerMovementNew : MonoBehaviour
 
     private void StateHandler()
     {
-        // Freeze 
-        if (freeze)
+        // Sliding
+        if (sliding)
         {
-            movementState = MovementState.Freeze;
+            state = MovementState.Sliding;
+            
+            if(OnSlope() && rb.linearVelocity.y < 0.1f)
+                desiredMoveSpeed = slideSpeed;
+            
+            else
+                desiredMoveSpeed = sprintSpeed;
+        }
+        
+        // Freeze 
+        else if (freeze)
+        {
+            state = MovementState.Freeze;
             moveSpeed = 0;
             rb.linearVelocity = Vector3.zero;
         }
@@ -150,31 +176,69 @@ public class PlayerMovementNew : MonoBehaviour
         // Crouching
         else if (Input.GetKey(crouchKey))
         {
-            movementState = MovementState.Crouching;
-            moveSpeed = crouchSpeed;
+            state = MovementState.Crouching;
+            desiredMoveSpeed = crouchSpeed;
         }
 
         // Sprinting
-        if (isGrounded && Input.GetKey(sprintKey))
+        else if (isGrounded && Input.GetKey(sprintKey))
         {
-            movementState = MovementState.Sprinting;
-            moveSpeed = sprintSpeed;
+            state = MovementState.Sprinting;
+            desiredMoveSpeed = sprintSpeed;
         }
 
         // Walking
         else if (isGrounded)
         {
-            movementState = MovementState.Walking;
-            moveSpeed = walkSpeed;
+            state = MovementState.Walking;
+            desiredMoveSpeed = walkSpeed;
         }
 
         // Air
         else
         {
-            movementState = MovementState.Air;
+            state = MovementState.Air;
         }
+
+        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
+        {
+            StopAllCoroutines();
+            StartCoroutine(SmoothlyLerpMoveSpeed());
+        }
+        else
+        {
+            moveSpeed = desiredMoveSpeed;
+        }
+        
+        lastDesiredMoveSpeed = desiredMoveSpeed;
     }
 
+    private IEnumerator SmoothlyLerpMoveSpeed()
+    {
+        float time = 0;
+        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
+        float startValue = moveSpeed;
+
+        while (time < difference)
+        {
+            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+
+            if (OnSlope())
+            {
+                float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
+                float slopeAngleIncrease = 1 + (slopeAngle / 90f);
+                time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
+            }
+            else
+                time += Time.deltaTime * speedIncreaseMultiplier;
+            
+            yield return null;
+        }
+        
+        moveSpeed = desiredMoveSpeed;
+    }
+    
+    
     private void MovePlayer()
     {
         if (activeGrapple) return;
@@ -185,19 +249,19 @@ public class PlayerMovementNew : MonoBehaviour
 
         if (OnSlope() && !exitingSlope)
         {
-            rb.AddForce(GetSlopeMoveDirection() * (moveSpeed * 20f), ForceMode.Force);
+            rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
 
             if (rb.linearVelocity.y > 0)
-            {
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-            }
+            
         }
 
-        // In air
+        
         else if (isGrounded)
-            rb.AddForce(moveDirection.normalized * (moveSpeed * 10f), ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        
         else if (!isGrounded)
-            rb.AddForce(moveDirection.normalized * (moveSpeed * 10f * airMultiplier), ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
         rb.useGravity = !OnSlope();
 
@@ -278,7 +342,7 @@ public class PlayerMovementNew : MonoBehaviour
         }
     }
 
-    private bool OnSlope()
+    public bool OnSlope()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
         {
@@ -289,9 +353,9 @@ public class PlayerMovementNew : MonoBehaviour
         return false;
     }
 
-    private Vector3 GetSlopeMoveDirection()
+    public  Vector3 GetSlopeMoveDirection(Vector3 direction)
     {
-        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
     }
 
 
