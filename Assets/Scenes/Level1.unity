@@ -1295,6 +1295,7 @@ MonoBehaviour:
   lineRenderer: {fileID: 1165702167}
   maxGrappleDistance: 40
   grappleDelayTime: 0
+  overshootYAxis: 2
   grapplingCooldown: 0.15
   grappleKey: 324
 --- !u!1 &615416075
