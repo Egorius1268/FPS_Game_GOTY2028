@@ -51,6 +51,13 @@ public class Bullet : MonoBehaviour
             target.TakeDamage(damage);
         }
         ReturnToPool();
+        
+        EnemyAI enemy = collision.gameObject.GetComponent<EnemyAI>();
+        if (enemy != null)
+        {
+            enemy.TakeDamage(damage);
+        }
+        ReturnToPool();
     }
 
     private void OnTriggerEnter(Collider other)
