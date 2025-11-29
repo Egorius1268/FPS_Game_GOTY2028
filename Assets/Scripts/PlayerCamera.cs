@@ -1,11 +1,14 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerCamera: MonoBehaviour
 {
     private float xRotation = 0f;
-
+    public Camera playerCamera;
+    //public Transform player;
     public float mouseSensitivity = 2f;
     public float yRotationLimit = 90f;
+    public Transform camHolder;
 
     void Update()
     {
@@ -15,16 +18,16 @@ public class PlayerCamera: MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -yRotationLimit, yRotationLimit);
-        Camera.main.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        camHolder.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 
     public void DoFov(float endValue)
     {
-        
+        playerCamera.DOFieldOfView(endValue, 0.25f);
     }
 
-    public void DoTilt(float zTilt)
+    /*public void DoTilt(float zTilt)
     {
-        
-    }
+        transform.DOLocalRotate(new Vector3(0, 0, zTilt), 0.25f);
+    }*/
 }
