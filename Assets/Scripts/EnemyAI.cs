@@ -22,7 +22,7 @@ public class EnemyAI : MonoBehaviour
     //public GameObject projectile;
     
     public float bulletDamage = 30f;
-    public float bulletSpeed = 1500f;
+    public float bulletSpeed = 600f;
     public float attackRange = 100f;
     public Transform shootingPoint;
     public ObjectPool bulletPool;

@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject deathPanel;
     public GameObject pauseManager;
     public GameObject levelCompletePanel;
+    public PlayerCamera playerCamera;
 
     
 
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
      playerMovement.CursorLock();
      Time.timeScale = 1;
      deathPanel.SetActive(false);
+     playerCamera.GetComponent<PlayerCamera>().enabled = true;
      
  }
 
@@ -37,6 +39,7 @@ public class GameManager : MonoBehaviour
      Debug.Log("Game Over");
      Time.timeScale = 0;
      deathPanel.SetActive(true);
+     playerCamera.GetComponent<PlayerCamera>().enabled = false;
  }
  public void LevelComplete()
  {
@@ -44,6 +47,6 @@ public class GameManager : MonoBehaviour
      playerMovement.CursorUnlock();  
      Debug.Log("Game Over");
      Time.timeScale = 0;
-     
+     playerCamera.GetComponent<PlayerCamera>().enabled = false;
  }
 }

@@ -251,7 +251,7 @@ MonoBehaviour:
   health: 120
   timeBetweenAttacks: 1
   bulletDamage: 10
-  bulletSpeed: 25
+  bulletSpeed: 171.7
   attackRange: 56.7
   shootingPoint: {fileID: 6820940029468561786}
   bulletPool: {fileID: 0}

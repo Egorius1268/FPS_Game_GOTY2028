@@ -14,6 +14,10 @@ public class Bullet : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
     }
 
     void OnEnable()
@@ -49,21 +53,29 @@ public class Bullet : MonoBehaviour
         if (target != null)
         {
             target.TakeDamage(damage);
+            ReturnToPool();
+            return;
         }
-        ReturnToPool();
-        
+
+
         EnemyAI enemy = collision.gameObject.GetComponent<EnemyAI>();
         if (enemy != null)
         {
             enemy.TakeDamage(damage);
+            ReturnToPool();
+            return;
         }
-        ReturnToPool();
+        
 
         PlayerHealth player = collision.gameObject.GetComponent<PlayerHealth>();
         if (player !=  null)
         {
             player.TakeDamage(damage);
+            ReturnToPool();
+            return;
         }
+        
+        ReturnToPool();
     }
 
     private void OnTriggerEnter(Collider other)
