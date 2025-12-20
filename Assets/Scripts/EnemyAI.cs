@@ -19,27 +19,53 @@ public class EnemyAI : MonoBehaviour
     public float health;
     public float timeBetweenAttacks;
     private bool alreadyAttacked;
-    public GameObject projectile;
+    //public GameObject projectile;
     
-    public float sightRange, attackRange;
+    public float bulletDamage = 30f;
+    public float bulletSpeed = 1500f;
+    public float attackRange = 100f;
+    public Transform shootingPoint;
+    public ObjectPool bulletPool;
+
+    public float sightRange;
     public bool  playerInSightRange, playerInAttackRange;
 
     private void Awake()
     {
         player = GameObject.Find("Player").transform;
         agent =  GetComponent<NavMeshAgent>();
+        if (bulletPool == null)
+        {
+            bulletPool = FindObjectOfType<ObjectPool>();
+        }
     }
 
     private void Update()
     {
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+        playerInAttackRange = CheckAttackRange();
         
         if(!playerInSightRange && !playerInAttackRange) Patroling();
         if(playerInSightRange && !playerInAttackRange) ChasePlayer();
         if(playerInSightRange && playerInAttackRange) AttackPlayer();
     }
-
+    private bool CheckAttackRange()
+    {
+        if (player == null) return false;
+        
+        float distance = Vector3.Distance(transform.position, player.position);
+        if (distance > attackRange) return false;
+        
+        RaycastHit hit;
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        if (Physics.Raycast(transform.position, directionToPlayer, out hit, attackRange))
+        {
+            return hit.transform == player;
+        }
+        
+        return false;
+    }
+    
     private void Patroling()
     {
         if (!walkPointSet) SearchWalkPoint();
@@ -74,20 +100,54 @@ public class EnemyAI : MonoBehaviour
     {
         agent.SetDestination(transform.position);
         
-        transform.LookAt(player);
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        directionToPlayer.y = 0; 
+        if (directionToPlayer != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+        }
 
         if (!alreadyAttacked)
         {
-            Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
-            rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            rb.AddForce(transform.up * 8f, ForceMode.Impulse);
-            
-            
+            Shoot();
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
 
+    private void Shoot()
+    {
+        if (player == null || bulletPool == null) return;
+        
+        
+        Vector3 targetPoint = player.position + Vector3.up * 0.5f; 
+        
+        Vector3 direction = (targetPoint - shootingPoint.position).normalized;
+        
+        GameObject bullet = bulletPool.GetObject();
+        if (bullet == null) return;
+        
+        bullet.transform.SetPositionAndRotation(shootingPoint.position, Quaternion.LookRotation(direction));
+        
+        
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.linearVelocity = bullet.transform.forward * bulletSpeed;
+        }
+        
+        
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+        if (bulletScript != null)
+        {
+            bulletScript.pool = bulletPool;
+            bulletScript.lifeTime = 5f;
+            bulletScript.damage = bulletDamage;
+        }
+    }
     private void ResetAttack()
     {
         alreadyAttacked = false;

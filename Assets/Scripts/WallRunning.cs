@@ -131,6 +131,8 @@ public class WallRunning : MonoBehaviour
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         
         playerCamera.DoFov(90f);
+        float targetTilt = wallRight ? 5f : -5f;
+        playerCamera.DoTilt(targetTilt, 0.25f);
        // if (wallLeft) playerCamera.DoTilt(-5f);
        // if (wallRight) playerCamera.DoTilt(5f);
     }
@@ -165,7 +167,7 @@ public class WallRunning : MonoBehaviour
     private void StopWallRun()
     {
         pm.wallrunning = false;
-        
+        playerCamera.DoTilt(0f, 0.25f);
         //playerCamera.DoTilt(0f);
         playerCamera.DoFov(80f);
     }
@@ -181,5 +183,7 @@ public class WallRunning : MonoBehaviour
         
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         rb.AddForce(forceToApply, ForceMode.Impulse);
+        
+        playerCamera.DoTilt(0f, 0.15f);
     }
 }
