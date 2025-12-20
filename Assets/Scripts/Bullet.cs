@@ -58,6 +58,12 @@ public class Bullet : MonoBehaviour
             enemy.TakeDamage(damage);
         }
         ReturnToPool();
+
+        PlayerHealth player = collision.gameObject.GetComponent<PlayerHealth>();
+        if (player !=  null)
+        {
+            player.TakeDamage(damage);
+        }
     }
 
     private void OnTriggerEnter(Collider other)

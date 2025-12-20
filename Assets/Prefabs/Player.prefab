@@ -2946,6 +2946,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2527198086527429091}
+  - component: {fileID: -3760529300159516875}
   - component: {fileID: 5150311727178355170}
   - component: {fileID: 4906256702508622761}
   - component: {fileID: 8231570674595760078}
@@ -2976,6 +2977,19 @@ Transform:
   - {fileID: 6742547907082589732}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3760529300159516875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8444889131551871007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b997d617967c4ca4a833854d3c16978a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  health: 0
 --- !u!114 &5150311727178355170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2993,6 +3007,7 @@ MonoBehaviour:
   sprintSpeed: 25
   slideSpeed: 83.4
   wallrunSpeed: 43.5
+  swingSpeed: 0
   speedIncreaseMultiplier: 2
   slopeIncreaseMultiplier: 2
   groundDrag: 3
@@ -3009,12 +3024,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   maxSlopeAngle: 40.3
+  playerCamera: {fileID: 0}
+  grappleFov: 95
   gun: {fileID: 4128507861196113492}
   orientation: {fileID: 6742547907082589732}
   state: 0
   sliding: 0
   freeze: 0
   activeGrapple: 0
+  swinging: 0
   wallrunning: 0
 --- !u!114 &4906256702508622761
 MonoBehaviour:
