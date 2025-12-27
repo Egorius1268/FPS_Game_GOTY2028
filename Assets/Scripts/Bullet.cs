@@ -66,6 +66,7 @@ public class Bullet : MonoBehaviour
             return;
         }
         
+        
 
         PlayerHealth player = collision.gameObject.GetComponent<PlayerHealth>();
         if (player !=  null)

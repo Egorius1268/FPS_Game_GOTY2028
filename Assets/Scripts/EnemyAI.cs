@@ -157,7 +157,13 @@ public class EnemyAI : MonoBehaviour
     {
         health -= damage;
         
-        if (health <= 0) Invoke(nameof(DestroyEnemy), 5f);
+        if (health <= 0) Invoke(nameof(DestroyEnemy), 1.5f);
+    }
+    
+    public void TakeHeadshot()
+    {
+        health = 0;
+        Invoke(nameof(DestroyEnemy), 0.8f);
     }
 
     private void DestroyEnemy()
